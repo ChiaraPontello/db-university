@@ -82,3 +82,20 @@ ON `exams`.`course_id` = `courses`.`id`
 WHERE `vote` 
 GROUP BY `studente`, `corso` , `student_id`
 ORDER BY `exam_student`.`student_id` ASC;
+
+--filtro tentativi con voto minimo 18:
+SELECT CONCAT(`students`.`name`, `students`.`surname`) AS `studente`,  
+	`students`.`id`, 
+	`courses`.`name` AS `corso`, 
+	COUNT(`exams`.`course_id`) AS `tentativi`, 
+	MAX(`exam_student`.`vote`) AS `voto_massimo`
+FROM `students`
+INNER JOIN `exam_student`
+ON `students`.`id` = `exam_student`.`student_id`
+INNER JOIN `exams`
+ON `exam_student`.`exam_id` = `exams`.`id`
+INNER JOIN `courses`
+ON `exams`.`course_id` = `courses`.`id`
+GROUP BY `studente`, `corso` , `student_id`
+HAVING(`voto_massimo`) >= 18
+ORDER BY `exam_student`.`student_id` ASC;
